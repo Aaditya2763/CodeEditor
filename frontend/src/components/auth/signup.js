@@ -22,10 +22,9 @@ const user={
   password:password
 }
     try {
+      console.log(user)
       dispatch(registerUserAction(user))
-      setuserName("")
-        setEmail("")
-        setPassword("")
+      
         
     
     } catch (error) {

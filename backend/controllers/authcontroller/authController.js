@@ -4,8 +4,12 @@ const generateToken = require("../../config/tokenConfig");
 
 //register controller
 const userRegisterController = expressAsyncHandler(async (req, res) => {
+  console.log("cvbnghjklghj")
   const userExists = await User.findOne({ email: req?.body?.email });
-  if (userExists) throw new Error("User already exists");
+  if (userExists) {
+    res.json({error:"User already exists"});
+  return;
+  }
   try {
     const user = await User.create({
       userName: req?.body?.firstName,
@@ -14,7 +18,7 @@ const userRegisterController = expressAsyncHandler(async (req, res) => {
     });
     res.status(201).json(user);
   } catch (error) {
-    res.json(error.message);
+    res.status(error.status).json(error.message);
   }
 });
 

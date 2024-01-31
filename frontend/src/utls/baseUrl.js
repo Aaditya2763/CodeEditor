@@ -1,1 +1,1 @@
-export const baseUrl="https://codeeditorbackend-rmms.onrender.com"
+export const baseUrl="http://localhost:5000"
