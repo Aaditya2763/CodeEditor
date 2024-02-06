@@ -4,35 +4,38 @@ const generateToken = require("../../config/tokenConfig");
 
 //register controller
 const userRegisterController = expressAsyncHandler(async (req, res) => {
-  console.log("cvbnghjklghj")
   const userExists = await User.findOne({ email: req?.body?.email });
   if (userExists) {
-    res.json({error:"User already exists"});
-  return;
+    return res.status(400).json({ message: "User already exists" });
+    // throw new Error("User already exists");
+  
   }
+
   try {
     const user = await User.create({
-      userName: req?.body?.firstName,
+      userName: req?.body?.userName,
       email: req?.body?.email,
       password: req?.body?.password,
     });
     res.status(201).json(user);
   } catch (error) {
-    res.status(error.status).json(error.message);
+    res.json(error.message);
   }
 });
 
 //Login controller
 
 const userLoginController = expressAsyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req?.body;
+ 
   //check if user exists
   const userFound = await User.findOne({ email });
   //Check if password is match
+ 
   if (userFound && (await userFound.isPasswordMatched(password))) {
     res.json({
       _id: userFound?._id,
-      firstName: userFound?.firstName,
+      userName: userFound?.userName,
       lastName: userFound?.lastName,
       email: userFound?.email,
       profilePhoto: userFound?.profilePhoto,
@@ -40,8 +43,7 @@ const userLoginController = expressAsyncHandler(async (req, res) => {
       token: generateToken(userFound?._id),
     });
   } else {
-    res.status(401);
-    throw new Error("Invalid Login Credentials");
+    res.status(400).json({ message: "Invalid Login Credentials" });
   }
 });
 

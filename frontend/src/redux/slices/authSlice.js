@@ -1,81 +1,80 @@
-
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUserAction, logoutAction, registerUserAction } from "../actions/authActions";
 
-const userDataFromLoacalStorage = localStorage.getItem('userInfo')?JSON.parse(localStorage.getItem('userInfo')):null;
 
+
+const initialState={
+  user: "",
+  registered: "",
+  loading: false,
+  appErr: null,
+  serverErr: null,
+};
 const authSlice = createSlice({
   name: "auth",
+  initialState,
  
-  initialState: {
-  
-   userAuth:userDataFromLoacalStorage,
-   registered:"false",
-    
+  reducers: {
+    clearErrors: (state) => {
+      state.appErr = null;
+      state.serverErr = null;
+    },
   },
-
   extraReducers: (builder) => {
-
-    //register
+    // register
     builder.addCase(registerUserAction.pending, (state, action) => {
       state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
+      state.appErr = null;
+      state.serverErr = null;
     });
     builder.addCase(registerUserAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.registered = action?.payload
+      state.registered = action?.payload;
     });
     builder.addCase(registerUserAction.rejected, (state, action) => {
       state.loading = false;
-      state.appErr = action?.payload?.message;
-      state.serverErr = action?.error?.message;
+      state.appErr = action?.payload?.message || 'An error occurred';
+      state.serverErr = action?.payload?.message || 'Network error';
     });
 
-    //login
-    builder.addCase(loginUserAction.pending,(state,action)=>{
+    // login
+    builder.addCase(loginUserAction.pending, (state, action) => {
       state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    })
+      state.appErr = null;
+      state.serverErr = null;
+    });
     builder.addCase(loginUserAction.fulfilled, (state, action) => {
-      state.registered=false;
-      state.userAuth=action?.payload;
+      state.registered = "";
+      state.user = action?.payload;
       state.loading = false;
-      state.appErr=undefined;
-      state.serverErr=undefined;
+      state.appErr = null;
+      state.serverErr = null;
     });
     builder.addCase(loginUserAction.rejected, (state, action) => {
-     
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
       state.loading = false;
     });
-//logoutAction
 
-    builder.addCase(logoutAction.pending,(state,action)=>{
+    // logoutAction
+    builder.addCase(logoutAction.pending, (state, action) => {
       state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    })
+      state.appErr = null;
+      state.serverErr = null;
+    });
     builder.addCase(logoutAction.fulfilled, (state, action) => {
-      state.userAuth=undefined
+      state.userAuth = undefined;
       state.loading = false;
-      state.appErr=undefined;
-      state.serverErr=undefined;
+      state.appErr = null;
+      state.serverErr = null;
     });
     builder.addCase(logoutAction.rejected, (state, action) => {
-     
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
       state.loading = false;
     });
   },
-  
- 
 });
 
-
-
-export const { login, logout, register } = authSlice.actions;
+export const { clearErrors } = authSlice.actions;
 export default authSlice.reducer;

@@ -11,3 +11,37 @@ const generateToken=id=>{
 }
 
 module.exports=generateToken;
+
+
+
+
+const registerHandler = async (e) => {
+     e.preventDefault();
+ 
+   
+     useEffect(async() => {
+          const user = {
+               userName: userName,
+               email: email,
+               password: password,
+             };
+             try {
+               await dispatch(registerUserAction(user));
+               
+             } catch (error) {
+               // Handle unexpected errors
+               toast.error('An unexpected error occurred');
+             
+             }
+     
+       return () => {
+         if(appErr){
+          toast.error("bsdjbj")
+         }
+       }
+     }, [dispatch])
+}
+     
+   
+     
+    
